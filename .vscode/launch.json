@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "command": "npm run devstart",
+            "name": "Run npm devstart",
+            "request": "launch",
+            "type": "node-terminal"
+        }
+    ]
+}
