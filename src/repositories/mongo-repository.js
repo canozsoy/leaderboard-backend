@@ -8,11 +8,11 @@ class MongoRepository {
     }
 
     async connect() {
-        this.mongoClient.connect(this.mongoUrl);
+        await this.mongoClient.connect(this.mongoUrl);
     }
 
     async disconnect() {
-        this.mongoClient.disconnect();
+        await this.mongoClient.disconnect();
     }
 
     createSchema(modelName, blueprint) {

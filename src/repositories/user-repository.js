@@ -16,15 +16,19 @@ class UserRepository {
     }
 
     async createUserRedis(id) {
-        this.redisRepo.setAdd('user', '0', id);
+        await this.redisRepo.setAdd('user', '0', id);
     }
 
     async populate(id, rank) {
-        this.redisRepo.setAdd('user', rank, id);
+        await this.redisRepo.setAdd('user', rank, id);
     }
 
     async findUsersWithIds(ids) {
         return this.UserModel.find({ _id: { $in: ids } });
+    }
+
+    async increaseMoney(ids, amount) {
+        await this.UserModel.updateMany({ _id: { $in: ids } }, { $inc: { money: amount } });
     }
 }
 

@@ -11,31 +11,35 @@ class RedisRepository {
     }
 
     async connect() {
-        this.redisClient.connect();
+        await this.redisClient.connect();
     }
 
     async disconnect() {
-        this.redisClient.disconnect();
+        await this.redisClient.disconnect();
+    }
+
+    async getKey(key) {
+        return this.redisClient.get(key);
     }
 
     async setKey(key, value) {
-        this.redisClient.set(key, value);
+        await this.redisClient.set(key, value);
     }
 
     async rightPush(list, item) {
-        this.redisClient.rPush(list, item);
+        await this.redisClient.rPush(list, item);
     }
 
     async leftRemove(list, item) {
-        this.redisClient.lRem(list, 1, item);
+        await this.redisClient.lRem(list, 1, item);
     }
 
     async setAdd(setName, rank, payload) {
-        this.redisClient.sendCommand(['ZADD', setName, rank, payload]);
+        await this.redisClient.sendCommand(['ZADD', setName, rank, payload]);
     }
 
     async increaseScore(setName, value, id) {
-        this.redisClient.sendCommand(['ZINCRBY', setName, value, id]);
+        await this.redisClient.sendCommand(['ZINCRBY', setName, value, id]);
     }
 
     async getRank(setName, member) {
@@ -58,6 +62,26 @@ class RedisRepository {
     async getRange(setName, start, end) {
         const rawData = await this.redisClient.sendCommand(['ZREVRANGE', setName, start, end, 'WITHSCORES']);
         return this.formatRawData(rawData, Number(start));
+    }
+
+    async getListElement(list, index) {
+        return this.redisClient.lIndex(list, index);
+    }
+
+    async getElementNumberInSet(list) {
+        return this.redisClient.sendCommand(['ZCARD', list]);
+    }
+
+    async copySetWithZeros(zeroSetName, setName) {
+        await this.redisClient.sendCommand(['ZUNIONSTORE', zeroSetName, '1', setName, 'WEIGHTS', '0']);
+    }
+
+    async copySet(newSetName, setName) {
+        await this.redisClient.sendCommand(['ZUNIONSTORE', newSetName, '1', setName]);
+    }
+
+    async renameSet(from, to) {
+        await this.redisClient.sendCommand(['RENAME', from, to]);
     }
 }
 
