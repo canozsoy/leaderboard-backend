@@ -4,7 +4,6 @@ const signupRequestSchema = Joi.object({
     name: Joi.string()
         .min(3)
         .max(20)
-        .alphanum()
         .required(),
     country: Joi.string()
         .min(3)
@@ -13,12 +12,23 @@ const signupRequestSchema = Joi.object({
         .required(),
 });
 
+const populateRequestSchema = signupRequestSchema.keys({
+    score: Joi.number()
+        .min(0)
+        .max(10000)
+        .required(),
+});
+
 const signupResponseSchema = Joi.object({
     message: Joi.string().required(),
     code: Joi.number().required(),
 });
 
-export {
+const populateResponseSchema = signupResponseSchema;
+
+export default {
     signupRequestSchema,
     signupResponseSchema,
+    populateRequestSchema,
+    populateResponseSchema,
 };

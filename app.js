@@ -5,10 +5,10 @@ import Vision from '@hapi/vision';
 import HapiSwagger from 'hapi-swagger';
 import fs from 'fs';
 import initializeRoutes from 'src/routes/index.js';
+import { onFailAction, onPreResponse } from 'src/config/server-config.js';
 import mongoRepo from 'src/repositories/mongo-repository.js';
 import redisRepo from 'src/repositories/redis-repository.js';
 import boot from 'src/boot.js';
-import { onFailAction, onPreResponse } from 'src/config/server.js';
 
 (async () => {
     await Promise.all([

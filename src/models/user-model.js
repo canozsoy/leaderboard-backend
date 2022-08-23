@@ -4,6 +4,7 @@ const userSchema = {
     name: {
         type: String,
         required: true,
+        unique: true,
     },
     money: {
         type: Number,

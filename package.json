@@ -1,5 +1,5 @@
 {
-    "name": "Leaderboard",
+    "name": "leaderboard",
     "version": "1.0.0",
     "description": "",
     "main": "app.js",
@@ -26,6 +26,7 @@
         "uuid": "^8.3.2"
     },
     "devDependencies": {
+        "axios": "^0.27.2",
         "eslint": "^8.20.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.26.0"

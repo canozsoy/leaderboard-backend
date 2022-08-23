@@ -15,11 +15,11 @@ class MongoRepository {
         this.mongoClient.disconnect();
     }
 
-    async createSchema(modelName, blueprint) {
-        return new this.mongoClient.Schema(blueprint);
+    createSchema(modelName, blueprint) {
+        return new this.mongoClient.Schema(blueprint, { versionKey: false });
     }
 
-    async createModel(modelName, blueprint) {
+    createModel(modelName, blueprint) {
         const schema = this.createSchema(modelName, blueprint);
         return this.mongoClient.model(modelName, schema);
     }

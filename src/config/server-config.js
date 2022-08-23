@@ -12,6 +12,7 @@ function onPreResponse(request) {
 
     if (response.isBoom) {
         response.output.payload.status = 'FAIL';
+        console.log(response);
     } else {
         response.source.status = 'SUCCESS';
         response.source.statusCode = response.statusCode || 200;

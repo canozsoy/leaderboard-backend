@@ -19,15 +19,45 @@ class RedisRepository {
     }
 
     async setKey(key, value) {
-        await this.redisClient.set(key, value);
+        this.redisClient.set(key, value);
     }
 
     async rightPush(list, item) {
-        await this.redisClient.rPush(list, item);
+        this.redisClient.rPush(list, item);
     }
 
     async leftRemove(list, item) {
-        await this.redisClient.lRem(list, 1, item);
+        this.redisClient.lRem(list, 1, item);
+    }
+
+    async setAdd(setName, rank, payload) {
+        this.redisClient.sendCommand(['ZADD', setName, rank, payload]);
+    }
+
+    async increaseScore(setName, value, id) {
+        this.redisClient.sendCommand(['ZINCRBY', setName, value, id]);
+    }
+
+    async getRank(setName, member) {
+        return this.redisClient.sendCommand(['ZREVRANK', setName, member]);
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    formatRawData(rawData, start) {
+        const formattedArray = Array(rawData.length / 2).fill(undefined);
+        for (let i = 0, n = formattedArray.length; i < n; i += 1) {
+            formattedArray[i] = {
+                id: rawData[i * 2],
+                score: rawData[i * 2 + 1],
+                rank: i + start,
+            };
+        }
+        return formattedArray;
+    }
+
+    async getRange(setName, start, end) {
+        const rawData = await this.redisClient.sendCommand(['ZREVRANGE', setName, start, end, 'WITHSCORES']);
+        return this.formatRawData(rawData, Number(start));
     }
 }
 
