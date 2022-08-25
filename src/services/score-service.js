@@ -22,7 +22,7 @@ class ScoreService {
                         country: dataMongo[j].country,
                         name: dataMongo[j].name,
                         money: dataMongo[j].money,
-                        oldRank: oldRanks[dataRedis[i].id],
+                        oldRank: oldRanks[dataRedis[i].id] ?? dataRedis[i].rank,
                     };
                 }
             }
