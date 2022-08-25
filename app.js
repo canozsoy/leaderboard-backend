@@ -18,7 +18,6 @@ import boot from 'src/boot.js';
     const port = process.env.PORT || 3000;
     const server = Hapi.server({
         port,
-        host: 'localhost',
         routes: {
             validate: {
                 options: {
