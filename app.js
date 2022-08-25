@@ -25,6 +25,7 @@ import boot from 'src/boot.js';
                 },
                 failAction: onFailAction,
             },
+            cors: true,
         },
     });
 
