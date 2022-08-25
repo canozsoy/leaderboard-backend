@@ -5,7 +5,8 @@ RUN apk -U upgrade
 RUN apk add dumb-init
 
 # SWICH ENVIRONMENT TO PRODUCTION, COPY EVERYTHING TO WORKING DIRECTORY AS NODE USER AND NODE GROUP
-ENV NODE_ENV production
+# ENV NODE_ENV production
+ENV NODE_ENV development
 WORKDIR /app
 COPY --chown=node:node . /app
 
