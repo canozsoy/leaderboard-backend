@@ -9,7 +9,7 @@ class ScoreService {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    fillInfo(dataRedisInput, dataMongo, rankOfUser) {
+    fillInfo(dataRedisInput, dataMongo, rankOfUser, oldRanks) {
         const dataRedis = dataRedisInput;
         for (let i = 0, n = dataRedis.length; i < n; i += 1) {
             if (dataRedis[i].rank === rankOfUser) {
@@ -22,6 +22,7 @@ class ScoreService {
                         country: dataMongo[j].country,
                         name: dataMongo[j].name,
                         money: dataMongo[j].money,
+                        oldRank: oldRanks[dataRedis[i].id],
                     };
                 }
             }
@@ -45,15 +46,24 @@ class ScoreService {
         const topUserIds = topUsers.map((topUser) => topUser.id);
         const userIds = users.map((user) => user.id);
         const ids = [...topUserIds, ...userIds];
-        const userInfo = await this.userRepo.findUsersWithIds(ids);
-        const filledTopUsers = this.fillInfo(topUsers, userInfo, rankOfUser);
-        const filledUsers = this.fillInfo(users, userInfo, rankOfUser);
+        const [oldRanks, userInfo] = await Promise.all([
+            this.getOldRanks(ids),
+            this.userRepo.findUsersWithIds(ids),
+        ]);
+        const filledTopUsers = this.fillInfo(topUsers, userInfo, rankOfUser, oldRanks);
+        const filledUsers = this.fillInfo(users, userInfo, rankOfUser, oldRanks);
 
         return { topUsers: filledTopUsers, users: filledUsers };
     }
 
     async increaseScore(value, userId) {
-        this.redisRepo.increaseScore('user', value, userId);
+        await this.redisRepo.increaseScore('user', value, userId);
+    }
+
+    async getOldRanks(ids) {
+        const oldRanksAsPromises = ids.map((id) => this.redisRepo.getRank('oldUser', id));
+        const oldRanks = await Promise.all(oldRanksAsPromises);
+        return ids.reduce((prev, current, index) => ({ ...prev, [current]: oldRanks[index] }), {});
     }
 }
 
